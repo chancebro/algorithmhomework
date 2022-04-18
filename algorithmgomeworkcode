@@ -1,0 +1,189 @@
+// 알고리즘 과제 실행용.cpp : 이 파일에는 'main' 함수가 포함됩니다. 거기서 프로그램 실행이 시작되고 종료됩니다.
+//
+
+#include <stdio.h>
+#include <time.h>
+#include <stdlib.h>
+#define MAX_SIZE 10000
+int place[MAX_SIZE];
+//radix sort코드
+void radix_sort(int* array, int num) {
+    int result[MAX_SIZE], maxValue = 0;
+    int exp = 1;
+    for (int i = 0; i < num; i++) {
+        if (array[i] > maxValue) maxValue = array[i];
+    }
+    while (maxValue / exp > 0) { // 1의 자릿수를 계산한다.
+        int bucket[10] = { 0 };
+        for (int i = 0; i < num; i++)
+            bucket[array[i] / exp % 10]++; // 자릿수의 배열 처리한다.
+        for (int i = 1; i < 10; i++)
+            bucket[i] += bucket[i - 1]; // 결과배열을 만들기위해 누적계산을 한다	
+        for (int i = num - 1; i >= 0; i--) { //같은 자릿수 끼리는 순서를 유지한다
+            result[--bucket[array[i] / exp % 10]] = array[i];
+        }
+        for (int i = 0; i < num; i++) array[i] = result[i]; // 배열을 갱신한다
+        exp *= 10;
+    }
+}
+//mergesort 코드
+void merge(int* array, int left, int mid, int right) {
+    int i, j, k, l;
+    i = left;
+    j = mid + 1;
+    k = left;
+   
+    while (i <= mid && j <= right) {//분할정렬된 array를 합병하는 코드
+        if (array[i] <= array[j])
+            place[k++] = array[i++];
+        else
+            place[k++] = array[j++];
+    }    
+    if (i > mid) {//남은 값들을 복사한다
+        for (l = j; l <= right; l++)
+            place[k++] = array[l];
+    }    
+    else {
+        for (l = i; l <= mid; l++)
+            place[k++] = array[l];
+    }
+    for (l = left; l <= right; l++) {// 임시배열을 array에 재복사한다.
+        array[l] = place[l];
+    }
+}
+
+void merge_sort(int* array, int left, int right) {
+    int mid;
+
+    if (left < right) {
+        mid = (left + right) / 2; // mid 값을 계산해서 array를 분할
+        merge_sort(array, left, mid); // 앞쪽 부분 array 정렬
+        merge_sort(array, mid + 1, right); // 뒤쪽 부분 array 정렬
+        merge(array, left, mid, right); // 앞,뒤 array를 합친다.
+    }
+}
+//quick sort 코드
+void swap(int* a, int* b) {//두 값을 swap하는 함수
+    int t = *a;
+    *a = *b;
+    *b = t;
+}
+
+// 특정 값 찾기
+int partition(int array[], int left, int right) {
+
+    
+    int pivot = array[right];//pivot 값으로 오른쪽 끝 값을 선택한다 
+    int i = (left - 1);
+    // pivot값과 비교
+    for (int j = left; j < right; j++) { 
+        if (array[j] <= pivot) {
+            i++;
+            swap(&array[i], &array[j]);
+        }
+    }
+    swap(&array[i + 1], &array[right]);
+    //특정 값
+    return (i + 1);
+}
+
+void quick_sort(int array[], int left, int right) {
+    if (left < right) {
+        //특정 값보다 작은 리스트는 왼쪽 큰값은 오른쪽 정렬
+        int pi = partition(array, left, right);
+        
+        quick_sort(array, left, pi - 1);// 왼쪽 배열 정렬
+        
+        quick_sort(array, pi + 1, right);// 오른쪽 배열 정렬
+    }
+}
+//heap sort 코드
+//heapify heap상태를 만들기 위한 함수 
+void heapify(int array[], int num, int i)
+{
+    int largest = i; //부모 인덱스
+    int left = 2 * i + 1; // 오른쪽 자식의 인덱스
+    int right = 2 * i + 2; // 왼쪽 자식의 인덱스
+
+    
+    if (left < num && array[left] > array[largest])// 왼쪽 자식의 값이 부모 인덱스 보다 크다면 바꿔줌
+        largest = left;
+
+   
+    if (right < num && array[right] > array[largest]) // 오른 쪽 자식 값이 부모 인덱스 보다 크다면 바꿔줌
+        largest = right;
+
+    
+    if (largest != i) {// 가장 큰 값을 부모 인덱스에 넣어줌
+        swap(&array[i], &array[largest]);
+
+        
+        heapify(array, num, largest);// 하위트리도 heaplify
+    }
+}
+void heap_sort(int array[], int num)//heap sort의 메인 함수
+{
+    for (int i = num / 2 - 1; i >= 0; i--)//heap 만들기
+        heapify(array, num, i);
+    
+    for (int i = num - 1; i > 0; i--) {
+        swap(&array[0], &array[i]);// heap에서 값 추출 
+        heapify(array, i, 0);// max healif 호출
+    }
+}
+void exchage_sort(int* array, int num) {
+
+    int  i, j, temp, n;
+    n = num;
+    for (i = 0; i < (n - 1); i++)
+    {
+        for (j = (i + 1); j < n; j++)
+        {
+            if (array[i] > array[j])//오른쪽 값이 왼쪽보다 작다면 swap
+            {
+                swap(&array[i], &array[j]);
+            }
+        }
+    }
+}
+//중복되지않는 배열을 생성하는 함수
+int *makeArray(int num) {
+	srand(time(NULL));
+	int* array;
+	array = (int*)malloc(sizeof(int) * num);
+	int n = num;
+	int i, j, k;
+	for (i = 0; i < n;) {
+		array[i] = rand() % n;
+		for (j = 0, k = 0; j < i; j++) {
+			if (array[i] == array[j]) {
+				k = 1;
+				break;
+			}
+		}
+		if (k == 0)
+			i = i + 1;
+	}
+	return array;
+}
+
+int main() {
+	double start, end,result;
+    start = clock();//프로그램 시작시간 
+	srand(time(NULL));
+	int* array;
+    int n = 10000;
+    array = makeArray(n);//n개의 배열 생성
+    //merge_sort(array,0,n-1);
+    //quick_sort(array, 0, n-1);
+    //heap_sort(array, n);
+    exchage_sort(array, n);
+    //radix_sort(array, n);
+    for (int i = 0; i < n; i++) {//배열을 출력하는 프로그램
+       printf("%d ", array[i]);
+    }
+    end = clock();//프로그램 끝 시간
+    result = (end - start)/CLOCKS_PER_SEC;
+	printf("프로그램 수행 시간 :%f\n",result );//프로그램 수행시간 출력
+}
+
