@@ -174,10 +174,11 @@ int main() {
 	int* array;
     int n = 10000;
     array = makeArray(n);//n개의 배열 생성
+    //원하는 알고리즘 주석표시 제거후 사용
     //merge_sort(array,0,n-1);
     //quick_sort(array, 0, n-1);
     //heap_sort(array, n);
-    exchage_sort(array, n);
+    //exchage_sort(array, n);
     //radix_sort(array, n);
     for (int i = 0; i < n; i++) {//배열을 출력하는 프로그램
        printf("%d ", array[i]);
