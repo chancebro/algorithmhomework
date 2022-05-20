@@ -48,7 +48,7 @@ void shortestPath(int start, int num)//시작점과 노드의 개수를 input
     for (i = 0; i < n; i++)
     {
         distance[i] = weight[start][i];//start기준의 가중치로 distance배열을 초기화   
-        visited[i] = FALSE;//found 값을 false로 초기화 아직 아무 노드도 방문하지 않았기 떄문
+        visited[i] = FALSE;//visited 값을 false로 초기화 아직 아무 노드도 방문하지 않았기 떄문
         
     }
     visited[start] = TRUE;// 시작노드이기 때문에 true
@@ -58,8 +58,8 @@ void shortestPath(int start, int num)//시작점과 노드의 개수를 input
 
             u = choose(distance, n, visited);// 최소값이 있는 인덱스를 u에 저장
             visited[u] = TRUE;//u 인덱스가 가장 작은 거리를 가진 
-           
-                  //노드의 인덱스 번호이기 때문에 방문
+           //노드의 인덱스 번호이기 때문에 방문
+            
         for (w = 0; w < n; w++)
         {
             
@@ -78,11 +78,12 @@ void shortestPath(int start, int num)//시작점과 노드의 개수를 input
         } 
         
     }
-    printf("%d번 노드에서 마지막 노드까지의 최단거리: %d",start ,distance[NODENUM - 1]);//마지막 노드까지의 최단거리의 값을 print
+   
+    printf(" %d번 노드에서 마지막 노드까지의 최단거리: %d",start ,distance[NODENUM - 1]);//마지막 노드까지의 최단거리의 값을 print
 }
 
 void main()
 {
-    shortestPath(1, 6);
+    shortestPath(5, 6);
     
 }
